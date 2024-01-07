@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -48,15 +49,9 @@ public class InternshipProcessUpdateRequest {
 
     private Boolean gssEntry;
 
-    private String mustehaklikBelgesiPath;
-
-    private String stajYeriFormuPath;
-
-    private String mufredatDurumuPath;
-
-    private String transkriptPath;
-
-    private String dersProgramıPath;
-
     private Boolean donem_ici;
+
+    private MultipartFile mustehaklikBelgesi;
+
+    private MultipartFile stajYeriFormu;
 }

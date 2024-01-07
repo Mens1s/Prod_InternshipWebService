@@ -11,11 +11,18 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternshipProcessGetResponse {
+
+    private String fullName;
+
+    private Date updateDate;
+
     private Integer id;
 
     private String tc;
 
     private String studentNumber;
+
+    private Integer studentId;
 
     private String telephoneNumber;
 
@@ -44,12 +51,29 @@ public class InternshipProcessGetResponse {
     private Boolean sgkEntry;
 
     private Boolean gssEntry;
+
     private Boolean editable;
 
-    private String mustehaklikBelgesiPath;
+    private Boolean donem_ici;
 
-    private String stajYeriFormuPath;
+    private Integer stajRaporuID;
+
+    private Integer mufredatDurumuID;
+
+    private Integer transkriptID;
+
+    private Integer dersProgramıID;
+
+    private Integer stajYeriFormuID;
+
+    private Integer mustehaklikBelgesiID;
 
     // @Enumerated(EnumType.STRING)
     private ProcessStatusEnum processStatus;
+
+    private Boolean rejected;
+
+    private String comment;
+
+    private String companyName;
 }

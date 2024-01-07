@@ -4,17 +4,19 @@ import com.teamaloha.internshipprocessmanagement.entity.embeddable.LogDates;
 import com.teamaloha.internshipprocessmanagement.enums.ProcessStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.Set;
 
 @Entity
 @Table(name = "internship_process")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class InternshipProcess {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -84,26 +86,26 @@ public class InternshipProcess {
     @Column(name = "assigner_id", nullable = true)
     private Integer assignerId;
 
-    @Column(name = "mustehaklik_belgesi_path", nullable = true)
-    private String mustehaklikBelgesiPath;
+    @Column(name = "mustehaklik_belgesi_id", nullable = true)
+    private Integer mustehaklikBelgesiID;
 
-    @Column(name = "staj_yeri_formu_path", nullable = true)
-    private String stajYeriFormuPath;
+    @Column(name = "staj_yeri_formu_id", nullable = true)
+    private Integer stajYeriFormuID;
 
     @Column(name = "donem_ici", nullable = true)
     private Boolean donem_ici;
 
-    @Column(name = "mufredat_durumu_path", nullable = true)
-    private String mufredatDurumuPath;
+    @Column(name = "mufredat_durumu_id", nullable = true)
+    private Integer mufredatDurumuID;
 
-    @Column(name = "transkript_path", nullable = true)
-    private String transkriptPath;
+    @Column(name = "transkript_id", nullable = true)
+    private Integer transkriptID;
 
-    @Column(name = "ders_programı_path", nullable = true)
-    private String dersProgramıPath;
+    @Column(name = "ders_programı_id", nullable = true)
+    private Integer dersProgramiID;
 
-    @Column(name = "staj_raporu_path", nullable = true)
-    private String stajRaporuPath;
+    @Column(name = "staj_raporu_id", nullable = true)
+    private Integer stajRaporuID;
 
     @Column(name = "process_status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -115,6 +117,15 @@ public class InternshipProcess {
 
     @Column(name = "comment", nullable = true)
     private String comment;
+
+    @Column(name = "comment_owner", nullable = true)
+    private String commentOwner;
+
+    @Column(name = "report_last_edit_date", nullable = true)
+    private Date reportLastEditDate;
+
+    @Column(name = "rejected")
+    private Boolean rejected;
 
     @OneToMany(mappedBy = "internshipProcess", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<ProcessAssignee> processAssignees;

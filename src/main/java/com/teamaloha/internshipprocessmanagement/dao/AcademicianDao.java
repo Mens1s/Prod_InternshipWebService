@@ -1,6 +1,7 @@
 package com.teamaloha.internshipprocessmanagement.dao;
 
 import com.teamaloha.internshipprocessmanagement.entity.Academician;
+import com.teamaloha.internshipprocessmanagement.entity.Student;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -74,6 +75,8 @@ public interface AcademicianDao extends JpaRepository<Academician, Integer>,
             @Param("departmentId") Integer departmentId
     );
 
-    @Query("SELECT a FROM Academician a")
-    List<Academician> findAllAcademicians();
+    @Query("SELECT NEW com.teamaloha.internshipprocessmanagement.entity.Academician(a.firstName, a.lastName) FROM Academician a WHERE a.id = :id")
+    Academician fetchAcademicianNameById(@Param("id") Integer id);
+
+    Academician findByPasswordResetToken(String token);
 }

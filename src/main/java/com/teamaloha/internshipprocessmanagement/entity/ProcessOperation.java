@@ -5,14 +5,16 @@ import com.teamaloha.internshipprocessmanagement.enums.ProcessOperationType;
 import com.teamaloha.internshipprocessmanagement.enums.ProcessStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "process_operation")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class ProcessOperation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -28,7 +30,7 @@ public class ProcessOperation {
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
-    @Column(name = "old_status", nullable = false)
+    @Column(name = "old_status", nullable = true)
     @Enumerated(EnumType.STRING)
     private ProcessStatusEnum oldStatus;
 
@@ -36,7 +38,7 @@ public class ProcessOperation {
     @Enumerated(EnumType.STRING)
     private ProcessStatusEnum newStatus;
 
-    @Column(name = "operation_type")
+    @Column(name = "operation_type", nullable = true)
     @Enumerated(EnumType.STRING)
     private ProcessOperationType operationType;
 

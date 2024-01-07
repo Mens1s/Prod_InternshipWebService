@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/academician")
 public class AcademicianController {
@@ -39,18 +41,18 @@ public class AcademicianController {
     @GetMapping("/get-all")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
-    public AcademicsGetAllResponse getAllAcademics(@RequestBody AcademicianSearchDto academicianSearchDto) {
-        return academicianService.getAllAcademics(academicianSearchDto);
+    public AcademicsGetAllResponse getAllAcademics(@RequestBody AcademicianSearchDto academicianSearchDto, @CurrentUserId Integer adminId) {
+        return academicianService.getAllAcademics(academicianSearchDto, adminId);
     }
 
     // TODO: ADD ADMIN ROLE CONTROL INSTEAD ACADEMICIAN
     @GetMapping("/get-all-not-pageable")
     @ResponseStatus(HttpStatus.OK)
-    public AcademicsGetAllResponse getAllAcademics() {
-        return academicianService.getAllAcademics();
+    @PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
+    public AcademicsGetAllResponse getAllAcademics(@CurrentUserId Integer adminId) {
+        return academicianService.getAllAcademics(adminId);
     }
 
-    // TODO : change Authority to admin if it is possible
     @PutMapping("/validate")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
@@ -58,7 +60,6 @@ public class AcademicianController {
         academicianService.validateAcademician(academicianId, adminId);
     }
 
-    // TODO : change Authority to admin if it is possible
     @PutMapping("/assign-department")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
@@ -66,9 +67,34 @@ public class AcademicianController {
         academicianService.assignDepartmentToAcademician(academicianId, departmentId, adminId);
     }
 
+    @PostMapping("/assignTaskOnly")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean assignTaskOnly(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId, @CurrentUserId Integer adminId) {
+        return academicianService.assignTask(academicianId, taskId, adminId);
+    }
+
     @PostMapping("/assignTask")
     @ResponseStatus(HttpStatus.OK)
-    public boolean assignTask(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId) {
-        return academicianService.assignTask(academicianId, taskId);
+    public boolean assignTask(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") List<Integer> taskId, @CurrentUserId Integer adminId) {
+        System.out.println(taskId);
+        return academicianService.assignTask(academicianId, taskId, adminId);
+    }
+
+    @PostMapping("/auth/forgotPassword")
+    @ResponseStatus(HttpStatus.OK)
+    public void forgotPassword(@RequestParam @Valid String email) {
+        academicianService.forgotPassword(email);
+    }
+
+    @PostMapping("/auth/resetPassword")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPassword(@RequestParam @Valid String token, @RequestParam @Valid String newPassword) {
+        academicianService.resetPassword(token, newPassword);
+    }
+
+    @PostMapping("/auth/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean verify(@RequestParam @Valid String code, @RequestParam @Valid String mail) {
+        return academicianService.verify(code, mail);
     }
 }
