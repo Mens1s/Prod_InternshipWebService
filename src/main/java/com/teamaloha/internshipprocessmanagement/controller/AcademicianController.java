@@ -69,8 +69,8 @@ public class AcademicianController {
 
     @PostMapping("/assignTaskOnly")
     @ResponseStatus(HttpStatus.OK)
-    public boolean assignTaskOnly(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId, @CurrentUserId Integer adminId) {
-        return academicianService.assignTask(academicianId, taskId, adminId);
+    public boolean assignTaskOnly(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId) {
+        return academicianService.assignTask(academicianId, taskId, 22);
     }
 
     @PostMapping("/assignTask")
