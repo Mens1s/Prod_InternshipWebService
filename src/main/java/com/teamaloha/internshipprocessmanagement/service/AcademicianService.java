@@ -13,7 +13,6 @@ import com.teamaloha.internshipprocessmanagement.dto.authentication.Authenticati
 import com.teamaloha.internshipprocessmanagement.dto.user.UserDto;
 import com.teamaloha.internshipprocessmanagement.entity.Academician;
 import com.teamaloha.internshipprocessmanagement.entity.Department;
-import com.teamaloha.internshipprocessmanagement.entity.Student;
 import com.teamaloha.internshipprocessmanagement.entity.embeddable.LogDates;
 import com.teamaloha.internshipprocessmanagement.enums.ErrorCodeEnum;
 import com.teamaloha.internshipprocessmanagement.enums.RoleEnum;
@@ -57,6 +56,15 @@ public class AcademicianService {
     }
 
     public AuthenticationResponse register(AcademicianRegisterRequest academicianRegisterRequest) {
+        //if (!UtilityService.checkMailIsValid(academicianRegisterRequest.getMail())) {
+        //    logger.error("Invalid mail. Mail: " + academicianRegisterRequest.getMail());
+        //    throw new CustomException(ErrorCodeEnum.MAIL_FORMAT_NOT_VALID.getErrorCode(), HttpStatus.BAD_REQUEST);
+        //}
+        if (!UtilityService.checkPasswordValid(academicianRegisterRequest.getPassword())) {
+            logger.error("Invalid password. Password: " + academicianRegisterRequest.getPassword());
+            throw new CustomException(ErrorCodeEnum.PASSWORD_FORMAT_NOT_VALID.getErrorCode(), HttpStatus.BAD_REQUEST);
+        }
+
         boolean isMailExistsBefore = userService.existsByMail(academicianRegisterRequest.getMail());
         if (isMailExistsBefore) {
             logger.error("Given mail exists before. Mail: " + academicianRegisterRequest.getMail());
@@ -106,8 +114,19 @@ public class AcademicianService {
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        if(!academician.getVerifiedMail()){
-            logger.error("Mail is not verified.");
+        if(!academician.getVerifiedMail()) {
+            // create 6 digit verification code
+            Random random = new Random();
+            int code = random.nextInt(999999);
+            academician.setVerificationCode(String.format("%06d", code));
+            mailService.sendMail(
+                    Arrays.asList(academician.getMail()),
+                    null,
+                    "Akademisyen Kaydı",
+                    "Akademisyen kaydınızı tamamlamak için aşağıdaki linke tıklayınız ve "+academician.getVerificationCode()+" kodunu Giriniz"+": http://localhost:3000/onayla/auth");
+            academicianDao.save(academician);
+
+            logger.error("Mail is not verified. UserId: " + academician.getId());
             throw new CustomException(ErrorCodeEnum.MAIL_NOT_VERIFIED.getErrorCode(), HttpStatus.BAD_REQUEST);
         }
 
@@ -222,12 +241,8 @@ public class AcademicianService {
         return true;
     }
 
-    public List<String> getAcademiciansMail(List<Integer> ids){
-        List<String> mails = new ArrayList<>();
-        for (Integer id : ids) {
-            mails.add(getAcademicianIfExistsOrThrowException(id).getMail());
-        }
-        return mails;
+    public List<String> getAcademiciansMail(List<Integer> ids) {
+        return userService.findMailsByUserIds(ids);
     }
 
     public List<Integer> findAcademiciansIdsByInternshipCommitteeAndDepartment(Boolean internshipCommittee, Integer departmentId) {
@@ -340,7 +355,6 @@ public class AcademicianService {
         return academician;
     }
 
-
     private String getFullName(Academician academician) {
         return academician.getFirstName() + " " + academician.getLastName();
     }
@@ -384,7 +398,7 @@ public class AcademicianService {
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(academician, userDto);
-        String token = authenticationService.createJwtToken(userDto);
+        String token = UtilityService.generateRandomString();
         academician.setPasswordResetToken(token);
         academicianDao.save(academician);
 

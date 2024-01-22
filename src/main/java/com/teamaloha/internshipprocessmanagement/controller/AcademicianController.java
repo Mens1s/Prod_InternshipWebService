@@ -69,15 +69,15 @@ public class AcademicianController {
 
     @PostMapping("/assignTaskOnly")
     @ResponseStatus(HttpStatus.OK)
-    public boolean assignTaskOnly(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId) {
-        return academicianService.assignTask(academicianId, taskId, 22);
+    public boolean assignTaskOnly(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") Integer taskId, @CurrentUserId Integer adminId) {
+        return academicianService.assignTask(academicianId, taskId, adminId);
     }
 
     @PostMapping("/assignTask")
     @ResponseStatus(HttpStatus.OK)
-    public boolean assignTask(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") List<Integer> taskId) {
+    public boolean assignTask(@RequestParam("academicianId") Integer academicianId, @RequestParam("taskId") List<Integer> taskId, @CurrentUserId Integer adminId) {
         System.out.println(taskId);
-        return academicianService.assignTask(academicianId, taskId, 22);
+        return academicianService.assignTask(academicianId, taskId, adminId);
     }
 
     @PostMapping("/auth/forgotPassword")

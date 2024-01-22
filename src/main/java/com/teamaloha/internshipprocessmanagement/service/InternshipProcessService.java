@@ -100,6 +100,7 @@ public class InternshipProcessService {
         emptyProcess.setProcessStatus(ProcessStatusEnum.FORM);
         emptyProcess.setEditable(true);
         emptyProcess.setRejected(false);
+        emptyProcess.setRejectedStatus(null);
         InternshipProcess savedProcess = internshipProcessDao.save(emptyProcess);
 
         logger.info("Created InternshipProcess with ID: " + savedProcess.getId());
@@ -200,6 +201,49 @@ public class InternshipProcessService {
     public void updateInternshipProcess(InternshipProcessUpdateRequest internshipProcessUpdateRequest, Integer studentId) {
         Integer processId = internshipProcessUpdateRequest.getId();
 
+        // Check if tc number is valid or throw exception
+        if (!StringUtils.isBlank(internshipProcessUpdateRequest.getTc())) {
+            Boolean valid = false;
+            String tmp = internshipProcessUpdateRequest.getTc();
+
+            if(tmp.toCharArray()[0] != '0'){
+                //cannot start with 0
+                if (tmp.length() == 11) {
+                    //should be 11 digits
+                    int totalOdd = 0;
+
+                    int totalEven = 0;
+
+                    for (int i = 0; i < 9; i++) {
+                        int val = Integer.valueOf(tmp.substring(i, i + 1));
+
+                        if (i % 2 == 0) {
+                            totalOdd += val;
+                        } else {
+                            totalEven += val;
+                        }
+                    }
+
+                    int total = totalOdd + totalEven + Integer.valueOf(tmp.substring(9, 10));
+
+                    int lastDigit = total % 10;
+
+                    if (tmp.substring(10).equals(String.valueOf(lastDigit))) {
+                        int check = (totalOdd * 7 - totalEven) % 10;
+
+                        if (tmp.substring(9, 10).equals(String.valueOf(check))) {
+                            valid = true;
+                        }
+                    }
+                }
+            }
+            if (!valid) {
+                logger.error("TC number is not valid. TC number: " + internshipProcessUpdateRequest.getTc());
+                throw new CustomException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+
         InternshipProcess internshipProcess = getInternshipProcessIfExistsOrThrowException(processId);
         if (!internshipProcess.getEditable()) {
             logger.error("Internship process is not editable. Process id: " + processId);
@@ -257,6 +301,8 @@ public class InternshipProcessService {
         List<ProcessAssignee> assigneeList = prepareProcessAssigneeList(internshipProcess, now);
         internshipProcess.setProcessStatus(ProcessStatusEnum.REPORT1);
         internshipProcess.setRejected(false);
+        internshipProcess.setRejectedStatus(null);
+        internshipProcess.getLogDates().setUpdateDate(now);
 
         InternshipProcess updatedInternshipProcess = internshipProcessDao.save(internshipProcess);
 
@@ -363,7 +409,7 @@ public class InternshipProcessService {
         List<Integer> assigneeIds = assigneeList.stream().map(ProcessAssignee::getAssigneeId).toList();
         List<String> to = academicianService.getAcademiciansMail(assigneeIds);
 
-        mailService.sendMail(
+        mailService.sendMailAsync(
                 to,
                 null,
                 "Staj Başvurusu",
@@ -441,7 +487,7 @@ public class InternshipProcessService {
                         + internshipProcess.getProcessStatus());
                 throw new CustomException(HttpStatus.BAD_REQUEST);
             }
-            mailService.sendMail(
+            mailService.sendMailAsync(
                     List.of(internshipProcess.getStudent().getMail()),
                     null,
                     "Staj Raporu Düzenleme İsteği",
@@ -451,6 +497,7 @@ public class InternshipProcessService {
             internshipProcess.setReportLastEditDate(calendar.getTime());
             internshipProcess.setRejected(true);
             nextStatus = ProcessStatusEnum.POST;
+            internshipProcess.setRejectedStatus(internshipProcess.getProcessStatus());
             processOperationType = ProcessOperationType.REJECTION;
         } else {
             if (!internshipProcessEvaluateRequest.getApprove()) {
@@ -480,7 +527,7 @@ public class InternshipProcessService {
                     nextStatus = internshipProcess.getProcessStatus();
                 }
                 processOperationType = ProcessOperationType.REJECTION;
-                mailService.sendMail(
+                mailService.sendMailAsync(
                         List.of(internshipProcess.getStudent().getMail()),
                         null,
                         "Staj Başvurusu Reddedildi",
@@ -512,7 +559,7 @@ public class InternshipProcessService {
                     nextStatus = ProcessStatusEnum.findNextStatus(internshipProcess.getProcessStatus());
                 }
                 processOperationType = ProcessOperationType.APPROVAL;
-                mailService.sendMail(
+                mailService.sendMailAsync(
                         List.of(internshipProcess.getStudent().getMail()),
                         null,
                         "Staj Başvurusu Onaylandı",
@@ -774,11 +821,10 @@ public class InternshipProcessService {
         excludedFields.add("comment");
         excludedFields.add("reportLastEditDate");
         excludedFields.add("commentOwner");
-        excludedFields.add("mustehaklikBelgesiID");
-        excludedFields.add("stajYeriFormuID");
+//        excludedFields.add("mustehaklikBelgesiID");
+//        excludedFields.add("stajYeriFormuID");
 
         Field[] fields = InternshipProcess.class.getDeclaredFields();
-/*
         for (Field field : fields) {
             String fieldName = field.getName();
             if (!excludedFields.contains(fieldName)) {
@@ -794,7 +840,6 @@ public class InternshipProcessService {
                 }
             }
         }
-       */
         return true;
     }
 
