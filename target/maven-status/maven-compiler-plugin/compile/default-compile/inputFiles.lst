@@ -8,6 +8,7 @@
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/dto/security/SecurityUser.java
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/dto/company/CompanyDto.java
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/dto/internshipTypes/InternshipTypesDto.java
+/Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/dto/PDFDataGetResponse.java
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/dto/authentication/StudentRegisterRequest.java
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/entity/Student.java
 /Users/mens1s/Desktop/intership/prodBackend/Prod_InternshipWebService/src/main/java/com/teamaloha/internshipprocessmanagement/entity/Faculty.java

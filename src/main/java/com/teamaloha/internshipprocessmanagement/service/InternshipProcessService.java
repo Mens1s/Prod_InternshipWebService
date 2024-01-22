@@ -912,6 +912,17 @@ public class InternshipProcessService {
 
         if (internshipProcess.getDepartment() != null) {
             internshipProcessGetResponse.setDepartmentId(internshipProcess.getDepartment().getId());
+            internshipProcessGetResponse.setDepartmentName(internshipProcess.getDepartment().getDepartmentName());
+        }
+
+        if (internshipProcess.getStartDate() != null) {
+            internshipProcessGetResponse.setStartDateStr(
+                    UtilityService.convertDate(internshipProcess.getStartDate(), UtilityService.format1));
+        }
+
+        if (internshipProcess.getEndDate() != null) {
+            internshipProcessGetResponse.setEndDateStr(
+                    UtilityService.convertDate(internshipProcess.getEndDate(), UtilityService.format1));
         }
 
         internshipProcessGetResponse.setFullName(internshipProcess.getStudent().getFirstName() + " " + internshipProcess.getStudent().getLastName());
@@ -927,36 +938,92 @@ public class InternshipProcessService {
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Integer updateFileId(Integer processId, Integer newLocationId, String type) {
-        InternshipProcess internshipProcess = internshipProcessDao.findInternshipProcessById(processId);
+    public Integer updateFileIdAndName(InternshipProcess internshipProcess, Integer newLocationId, String fileName, String type) {
         Integer oldLocationId = null;
 
         if(type.equals("mufredatDurumuID")){
             oldLocationId = internshipProcess.getMufredatDurumuID();
             internshipProcess.setMufredatDurumuID(newLocationId);
+            internshipProcess.setMufredatDurumuName(fileName);
         }
         else if(type.equals("transkriptID")){
             oldLocationId = internshipProcess.getTranskriptID();
             internshipProcess.setTranskriptID(newLocationId);
+            internshipProcess.setTranskriptName(fileName);
         }
         else if(type.equals("dersProgramıID")){
             oldLocationId = internshipProcess.getDersProgramiID();
             internshipProcess.setDersProgramiID(newLocationId);
+            internshipProcess.setDersProgramiName(fileName);
         }
         else if(type.equals("stajRaporuID")){
             oldLocationId = internshipProcess.getStajRaporuID();
             internshipProcess.setStajRaporuID(newLocationId);
+            internshipProcess.setStajRaporuName(fileName);
         }
         else if(type.equals("mustehaklikBelgesiID")){
             oldLocationId = internshipProcess.getMustehaklikBelgesiID();
             internshipProcess.setMustehaklikBelgesiID(newLocationId);
+            internshipProcess.setMustehaklikBelgesiName(fileName);
         }
         else if(type.equals("stajYeriFormuID")){
             oldLocationId = internshipProcess.getStajYeriFormuID();
             internshipProcess.setStajYeriFormuID(newLocationId);
+            internshipProcess.setStajYeriFormuName(fileName);
+        }
+        else {
+            logger.error("Invalid type. Type: " + type);
+            throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
         internshipProcessDao.save(internshipProcess);
         return oldLocationId;
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Integer deleteFileId(InternshipProcess internshipProcess, String type) {
+        Integer oldLocationId = null;
+
+        if(type.equals("mufredatDurumuID")){
+            oldLocationId = internshipProcess.getMufredatDurumuID();
+            internshipProcess.setMufredatDurumuID(null);
+            internshipProcess.setMufredatDurumuName(null);
+        }
+        else if(type.equals("transkriptID")){
+            oldLocationId = internshipProcess.getTranskriptID();
+            internshipProcess.setTranskriptID(null);
+            internshipProcess.setTranskriptName(null);
+        }
+        else if(type.equals("dersProgramıID")){
+            oldLocationId = internshipProcess.getDersProgramiID();
+            internshipProcess.setDersProgramiID(null);
+            internshipProcess.setDersProgramiName(null);
+        }
+        else if(type.equals("stajRaporuID")){
+            oldLocationId = internshipProcess.getStajRaporuID();
+            internshipProcess.setStajRaporuID(null);
+            internshipProcess.setStajRaporuName(null);
+        }
+        else if(type.equals("mustehaklikBelgesiID")){
+            oldLocationId = internshipProcess.getMustehaklikBelgesiID();
+            internshipProcess.setMustehaklikBelgesiID(null);
+            internshipProcess.setMustehaklikBelgesiName(null);
+        }
+        else if(type.equals("stajYeriFormuID")){
+            oldLocationId = internshipProcess.getStajYeriFormuID();
+            internshipProcess.setStajYeriFormuID(null);
+            internshipProcess.setStajYeriFormuName(null);
+        }
+        else {
+            logger.error("Invalid type. Type: " + type);
+            throw new CustomException(HttpStatus.BAD_REQUEST);
+        }
+
+        internshipProcessDao.save(internshipProcess);
+        return oldLocationId;
+    }
+
+    public InternshipProcess findById(Integer processId) {
+        return internshipProcessDao.findInternshipProcessById(processId);
     }
 }

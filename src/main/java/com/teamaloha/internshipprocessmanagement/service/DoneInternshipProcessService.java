@@ -265,6 +265,17 @@ public class DoneInternshipProcessService {
 
         if (doneInternshipProcess.getDepartment() != null) {
             doneInternshipProcessGetResponse.setDepartmentId(doneInternshipProcess.getDepartment().getId());
+            doneInternshipProcessGetResponse.setDepartmentName(doneInternshipProcess.getDepartment().getDepartmentName());
+        }
+
+        if (doneInternshipProcess.getStartDate() != null) {
+            doneInternshipProcessGetResponse.setStartDateStr(
+                    UtilityService.convertDate(doneInternshipProcess.getStartDate(), UtilityService.format1));
+        }
+
+        if (doneInternshipProcess.getEndDate() != null) {
+            doneInternshipProcessGetResponse.setEndDateStr(
+                    UtilityService.convertDate(doneInternshipProcess.getEndDate(), UtilityService.format1));
         }
 
         doneInternshipProcessGetResponse.setStudentId(doneInternshipProcess.getStudent().getId());
