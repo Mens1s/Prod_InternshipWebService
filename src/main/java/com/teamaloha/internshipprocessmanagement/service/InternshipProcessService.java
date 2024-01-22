@@ -824,7 +824,12 @@ public class InternshipProcessService {
         excludedFields.add("donem_ici");
         excludedFields.add("rejected");
         excludedFields.add("rejectedStatus");
-        excludedFields.add("processStatus");
+        excludedFields.add("mustehaklikBelgesiName");
+        excludedFields.add("stajYeriFormuName");
+        excludedFields.add("mufredatDurumuName");
+        excludedFields.add("transkriptName");
+        excludedFields.add("dersProgramiName");
+        excludedFields.add("stajRaporuName");
 //        excludedFields.add("mustehaklikBelgesiID");
 //        excludedFields.add("stajYeriFormuID");
 

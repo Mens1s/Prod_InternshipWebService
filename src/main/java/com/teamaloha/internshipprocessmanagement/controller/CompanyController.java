@@ -20,7 +20,7 @@ public class CompanyController {
     }
     @PostMapping("/addCompany")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).STUDENT.name()) || hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
+    //@PreAuthorize("hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).STUDENT.name()) || hasAuthority(T(com.teamaloha.internshipprocessmanagement.enums.RoleEnum).ACADEMICIAN.name())")
     public CompanyAddResponse addCompany(@RequestBody @Valid CompanyAddRequest companyAddRequest) {
         return companyService.add(companyAddRequest);
     }
