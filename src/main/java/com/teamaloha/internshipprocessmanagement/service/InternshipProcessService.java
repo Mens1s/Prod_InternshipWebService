@@ -823,6 +823,8 @@ public class InternshipProcessService {
         excludedFields.add("commentOwner");
         excludedFields.add("donem_ici");
         excludedFields.add("rejected");
+        excludedFields.add("rejectedStatus");
+        excludedFields.add("processStatus");
 //        excludedFields.add("mustehaklikBelgesiID");
 //        excludedFields.add("stajYeriFormuID");
 
