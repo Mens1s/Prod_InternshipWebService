@@ -821,6 +821,8 @@ public class InternshipProcessService {
         excludedFields.add("comment");
         excludedFields.add("reportLastEditDate");
         excludedFields.add("commentOwner");
+        excludedFields.add("donem_ici");
+        excludedFields.add("rejected");
 //        excludedFields.add("mustehaklikBelgesiID");
 //        excludedFields.add("stajYeriFormuID");
 
