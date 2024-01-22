@@ -174,14 +174,14 @@ public class StudentService {
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        if(jwtService.isTokenValid(student.getPasswordResetToken())){
+        if(student.getPasswordResetToken().equals(token)){
             student.setPassword(authenticationService.hashPassword(password));
         }else{
             logger.error("Invalid token. token: " + token);
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        student.setPassword(authenticationService.hashPassword(password));
+        /*student.setPassword(authenticationService.hashPassword(password));*/
         student.setPasswordResetToken(null);
         studentDao.save(student);
     }

@@ -298,6 +298,7 @@ public class AcademicianService {
     private AcademicianGetResponse convertEntityToDto(Academician academician) {
         AcademicianGetResponse academicianGetResponse = new AcademicianGetResponse();
         BeanUtils.copyProperties(academician, academicianGetResponse);
+        BeanUtils.copyProperties(academician, academicianGetResponse);
         if (academician.getDepartment() != null) {
             academicianGetResponse.setDepartmentName(academician.getDepartment().getDepartmentName());
         }
@@ -417,14 +418,14 @@ public class AcademicianService {
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        if(jwtService.isTokenValid(academician.getPasswordResetToken())){
+        if(academician.getPasswordResetToken().equals(token)){
             academician.setPassword(authenticationService.hashPassword(password));
         }else{
             logger.error("Invalid token. token: " + token);
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        academician.setPassword(authenticationService.hashPassword(password));
+        /*academician.setPassword(authenticationService.hashPassword(password));*/
         academician.setPasswordResetToken(null);
         academicianDao.save(academician);
     }
