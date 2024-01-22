@@ -45,6 +45,7 @@ public class StorageService {
             logger.error("File type is not PDF. processId: " + processId + " type: " + file.getContentType());
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
+
         Date now = new Date();
         PDFData pdfData = storageDao.save(PDFData.builder()
                 .logDates(LogDates.builder().createDate(now).updateDate(now).build())
